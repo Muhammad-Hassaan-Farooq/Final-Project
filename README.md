@@ -1,6 +1,6 @@
-# chronoscribe
+# final_project
 
-Chronoscribe is designed to combine event tracking with real time note taking and insights.
+A new Flutter project.
 
 ## Getting Started
 
