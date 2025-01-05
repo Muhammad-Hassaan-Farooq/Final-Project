@@ -7,11 +7,17 @@ class BottomScreen extends StatefulWidget {
   final LoginFormState loginForm;
   final void Function(bool) changeRememberMe;
   final SignupFormState signupFormState;
+  final Future<void> Function() register;
+  final Future<void> Function() login;
+  final Future<void> Function() google;
   const BottomScreen(
       {super.key,
       required this.loginForm,
       required this.changeRememberMe,
-      required this.signupFormState});
+      required this.signupFormState,
+      required this.register,
+      required this.login,
+      required this.google});
 
   @override
   State<StatefulWidget> createState() => _BottomScreen();
@@ -53,7 +59,10 @@ class _BottomScreen extends State<BottomScreen>
                     margin: const EdgeInsets.symmetric(horizontal: 20),
                     decoration: BoxDecoration(
                       borderRadius: const BorderRadius.all(Radius.circular(30)),
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withOpacity(0.5),
                     ),
                     child: TabBar(
                       controller: _tabController,
@@ -73,13 +82,20 @@ class _BottomScreen extends State<BottomScreen>
                   ),
                 ),
               ),
-              SizedBox(height: 20,),
+              SizedBox(
+                height: 20,
+              ),
               Expanded(
                   child: TabBarView(controller: _tabController, children: [
-                SignupForm(signupFormState: widget.signupFormState),
+                SignupForm(
+                    signupFormState: widget.signupFormState,
+                    register: widget.register,
+                    google: widget.google),
                 LoginForm(
                   loginFormState: widget.loginForm,
                   changeRememberMe: widget.changeRememberMe,
+                  login:widget.login,
+                  google:widget.google
                 )
               ]))
             ],

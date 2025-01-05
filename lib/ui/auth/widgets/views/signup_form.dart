@@ -2,25 +2,30 @@ import 'package:final_project/ui/auth/view_models/login_view_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class SignupForm extends StatelessWidget{
-  SignupForm({super.key, required this.signupFormState});
+class SignupForm extends StatelessWidget {
+  SignupForm(
+      {super.key,
+      required this.signupFormState,
+      required this.register,
+      required this.google});
   final _formKey = GlobalKey<FormState>();
   final SignupFormState signupFormState;
-
+  final Future<void> Function() register;
+  final Future<void> Function() google;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Form(
-          key: _formKey,
+            key: _formKey,
             child: Column(
               children: [
                 Padding(
                   padding: EdgeInsets.all(16),
                   child: TextFormField(
                     style:
-                    TextStyle(color: Theme.of(context).colorScheme.primary),
+                        TextStyle(color: Theme.of(context).colorScheme.primary),
                     controller: signupFormState.email,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
@@ -67,7 +72,7 @@ class SignupForm extends StatelessWidget{
                   padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
                   child: TextFormField(
                     style:
-                    TextStyle(color: Theme.of(context).colorScheme.primary),
+                        TextStyle(color: Theme.of(context).colorScheme.primary),
                     controller: signupFormState.password,
                     obscureText: true,
                     decoration: InputDecoration(
@@ -112,7 +117,7 @@ class SignupForm extends StatelessWidget{
                   padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
                   child: TextFormField(
                     style:
-                    TextStyle(color: Theme.of(context).colorScheme.primary),
+                        TextStyle(color: Theme.of(context).colorScheme.primary),
                     controller: signupFormState.passwordConfirm,
                     obscureText: true,
                     decoration: InputDecoration(
@@ -153,7 +158,9 @@ class SignupForm extends StatelessWidget{
                 Padding(
                   padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      register();
+                    },
                     child: SizedBox(
                       width: double.infinity,
                       child: Text(
@@ -165,11 +172,13 @@ class SignupForm extends StatelessWidget{
                 ),
                 Row(
                   children: [
-                    SizedBox(width: 16,),
+                    SizedBox(
+                      width: 16,
+                    ),
                     Expanded(
                       child: Divider(
                         color: Colors.grey, // Color of the line
-                        thickness: 1,       // Thickness of the line
+                        thickness: 1, // Thickness of the line
                       ),
                     ),
                     Padding(
@@ -186,30 +195,32 @@ class SignupForm extends StatelessWidget{
                     Expanded(
                       child: Divider(
                         color: Colors.grey, // Color of the line
-                        thickness: 1,       // Thickness of the line
+                        thickness: 1, // Thickness of the line
                       ),
                     ),
-                    SizedBox(width: 16,)
+                    SizedBox(
+                      width: 16,
+                    )
                   ],
                 ),
-                SizedBox(height: 16,),
+                SizedBox(
+                  height: 16,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    ElevatedButton(onPressed: (){}, child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Icon(Icons.mail),
-                        Text("Google")
-                      ],
-                    )),
-                    ElevatedButton(onPressed: (){}, child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Icon(Icons.facebook),
-                        Text("Facebook")
-                      ],
-                    ))
+                    ElevatedButton(
+                        onPressed: google,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [Icon(Icons.mail), Text("Google")],
+                        )),
+                    ElevatedButton(
+                        onPressed: () {},
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [Icon(Icons.facebook), Text("Facebook")],
+                        ))
                   ],
                 )
               ],

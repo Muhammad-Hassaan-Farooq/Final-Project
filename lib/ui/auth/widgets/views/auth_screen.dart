@@ -7,12 +7,18 @@ class AuthScreen extends StatelessWidget {
   final LoginFormState loginForm;
   final void Function(bool) changeRememberMe;
   final SignupFormState signupFormState;
+  final Future<void> Function() register;
+  final Future<void> Function() login;
+  final Future<void> Function() google;
   const AuthScreen(
       {super.key,
       required this.updatePage,
       required this.loginForm,
       required this.changeRememberMe,
-      required this.signupFormState});
+      required this.signupFormState,
+      required this.register,
+      required this.login,
+      required this.google});
 
   @override
   Widget build(BuildContext context) {
@@ -95,10 +101,12 @@ class AuthScreen extends StatelessWidget {
               ],
             )),
         BottomScreen(
-          loginForm: loginForm,
-          changeRememberMe: changeRememberMe,
-          signupFormState: signupFormState,
-        )
+            loginForm: loginForm,
+            changeRememberMe: changeRememberMe,
+            signupFormState: signupFormState,
+            register: register,
+            login: login,
+            google:google)
       ],
     ));
   }

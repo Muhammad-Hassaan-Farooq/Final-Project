@@ -1,5 +1,7 @@
+import 'package:final_project/data/repositories/auth/auth_repository.dart';
 import 'package:final_project/ui/core/view_models/splash_screen_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SplashScreen extends StatelessWidget{
   const SplashScreen({super.key,required this.viewModel});
@@ -8,7 +10,11 @@ class SplashScreen extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    viewModel.checkAuthStatus();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<AuthRepository>().logout();
+      viewModel.checkAuthStatus();
+    });
+
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: const Center(

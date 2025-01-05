@@ -6,11 +6,15 @@ class LoginForm extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final LoginFormState loginFormState;
   final void Function(bool) changeRememberMe;
+  final Future<void> Function() login;
+  final Future<void> Function() google;
 
   LoginForm(
       {super.key,
       required this.loginFormState,
-      required this.changeRememberMe});
+      required this.changeRememberMe,
+      required this.login,
+      required this.google});
 
   @override
   Widget build(BuildContext context) {
@@ -144,7 +148,7 @@ class LoginForm extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: login,
                     child: SizedBox(
                       width: double.infinity,
                       child: Text(
@@ -189,7 +193,7 @@ class LoginForm extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    ElevatedButton(onPressed: (){}, child: Row(
+                    ElevatedButton(onPressed: google, child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Icon(Icons.mail),

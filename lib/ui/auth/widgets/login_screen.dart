@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:final_project/ui/auth/widgets/views/auth_screen.dart';
 import 'package:final_project/ui/auth/widgets/views/start_screen.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Page;
 import 'package:provider/provider.dart';
 
 import '../view_models/login_view_model.dart';
@@ -24,7 +24,7 @@ class LoginScreen extends StatelessWidget {
               transitionBuilder: (child, animation) {
 
                 final reverse = animation.drive(Tween(begin: 1.0, end: 0.0));
-                bool isMovingForward = viewModel.currentPage == page.AUTH;
+                bool isMovingForward = viewModel.currentPage == Page.AUTH;
 
 
                 final slideAnimation = animation.drive(
@@ -55,16 +55,19 @@ class LoginScreen extends StatelessWidget {
                 key: ValueKey(viewModel.currentPage),
                 builder: (context) {
                   switch (viewModel.currentPage) {
-                    case page.START:
+                    case Page.START:
                       return StartScreen(
-                        updatePage: () => viewModel.updatePage(page.AUTH),
+                        updatePage: () => viewModel.updatePage(Page.AUTH),
                       );
-                    case page.AUTH:
+                    case Page.AUTH:
                       return AuthScreen(
-                        updatePage: () => viewModel.updatePage(page.START),
+                        updatePage: () => viewModel.updatePage(Page.START),
                         loginForm: viewModel.loginForm,
                         changeRememberMe: viewModel.setRememberMe,
                         signupFormState: viewModel.signupForm,
+                        register: viewModel.register,
+                        login: viewModel.login,
+                        google:viewModel.signInWithGoogle
                       );
                   }
                 },

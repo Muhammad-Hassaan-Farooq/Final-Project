@@ -15,9 +15,16 @@ class MockAuthRepository extends AuthRepository {
 
 
   @override
-  Future<void> login() async{
-    await Future.delayed(const Duration(milliseconds: 500));
-    _isLoggedIn =  true;
+  Future<void> login(String email, String password) async{
+    if(email =="" && password == ""){
+      await Future.delayed(const Duration(milliseconds: 500));
+      _isLoggedIn =  true;
+    }
+    else{
+      await Future.delayed(const Duration(milliseconds: 500));
+      _isLoggedIn =  false;
+    }
+
     notifyListeners();
   }
 
@@ -32,5 +39,17 @@ class MockAuthRepository extends AuthRepository {
     await Future.delayed(const Duration(microseconds: 500));
     _isAuthStateLoaded = true;
     notifyListeners();
+  }
+
+  @override
+  Future<void> signInWithGoogle() async{
+    await Future.delayed(const Duration(milliseconds: 500));
+    _isLoggedIn =  true;
+  }
+
+  @override
+  Future<void> signUp(String email, String password) async{
+    await Future.delayed(const Duration(milliseconds: 500));
+    _isLoggedIn =  true;
   }
 }
