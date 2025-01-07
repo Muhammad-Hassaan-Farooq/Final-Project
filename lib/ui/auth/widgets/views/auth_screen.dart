@@ -100,14 +100,16 @@ class AuthScreen extends StatelessWidget {
                 ),
               ],
             )),
-        BottomScreen(
-            loginForm: loginForm,
-            changeRememberMe: changeRememberMe,
-            signupFormState: signupFormState,
-            register: register,
-            login: login,
-            google:google)
-      ],
-    ));
+
+              BottomScreen(
+                  loginForm: loginForm,
+                  changeRememberMe: changeRememberMe,
+                  signupFormState: signupFormState,
+                  register: register,
+                  login: login,
+                  google: google)
+            ],
+          ),
+    );
   }
 }

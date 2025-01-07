@@ -9,12 +9,16 @@ class LoginFormState {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   bool isRememberMe = false;
+  String error = "";
+  bool isError = false;
 }
 
 class SignupFormState {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController passwordConfirm = TextEditingController();
+  String error = "";
+  bool isError = false;
 }
 
 class LoginViewModel extends ChangeNotifier {
@@ -56,26 +60,39 @@ class LoginViewModel extends ChangeNotifier {
     try{
       _signupState = SignupState.LOADING;
       if(password != confirmPassword){
+        signupForm.error= "Passwords dont match";
         _signupState = SignupState.ERROR;
+        signupForm.isError = true;
+        notifyListeners();
       }
       else{
         await _authRepository.signUp(email, password);
+        signupForm.isError = false;
       }
 
     }
     catch(e){
       _signupState = SignupState.ERROR;
     }
+
   }
 
   Future<void> login() async {
     try{
+      loginForm.isError = true;
       await _authRepository.login(
           _loginForm.email.text, _loginForm.password.text);
+
+      if(!_authRepository.isAuthenticated){
+        loginForm.isError = true;
+        loginForm.error = "Username or password incorrect";
+      }
     }
     catch(e){
-
+      loginForm.isError = true;
+      loginForm.error = "Username or password incorrect";
     }
+    notifyListeners();
 
   }
 

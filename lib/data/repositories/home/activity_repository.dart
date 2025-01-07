@@ -20,5 +20,6 @@ abstract class ActivityRepository extends ChangeNotifier {
   Stream<List<Activity>> getPastActivities();
 
   Future<List<Map<String, dynamic>>> fetchCollaborators();
+  String get currentUser;
   }
 

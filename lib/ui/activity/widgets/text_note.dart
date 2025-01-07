@@ -25,7 +25,7 @@ class TextNote extends StatefulWidget {
         _user = user,
         _isOwn = isOwn,
         _delete = delete ?? (() {}),
-        _showModal = showModal?? ((){}),
+        _showModal = showModal ?? (() {}),
         _email = email;
 
   @override
@@ -54,7 +54,9 @@ class TextNoteState extends State<TextNote> {
                     onPressed: widget._showModal,
                     icon: Icon(CupertinoIcons.pen),
                   ),
-                  IconButton(onPressed: widget._delete, icon: Icon(CupertinoIcons.clear))
+                  IconButton(
+                      onPressed: widget._delete,
+                      icon: Icon(CupertinoIcons.clear))
                 ],
               )
             ],
@@ -64,18 +66,22 @@ class TextNoteState extends State<TextNote> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  formattedTime,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
-                ),
+                FilterChip(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                          20), // Adjust the radius to your preference
+                    ),
+                    label: Text(
+                      formattedTime,
+                      style: TextStyle(
+                        fontSize: 14,
+                      ),
+                    ),
+                    onSelected: (e) {}),
                 Text(
                   widget._email,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey[600],
                   ),
                 )
               ],
@@ -100,8 +106,8 @@ class TextNoteState extends State<TextNote> {
                 });
               },
               child: Text(
-                widget._expanded ? 'Show Less' : 'Show More',
-                style: TextStyle(color: Colors.blue),
+                widget._expanded ? 'Show Less ↑' : 'Show More ↓',
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
               ),
             ),
           ],

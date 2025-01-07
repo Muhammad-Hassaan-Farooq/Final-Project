@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_project/data/repositories/home/activity_repository.dart';
 import 'package:final_project/data/services/home/activity_service.dart';
 import 'package:final_project/domain/home/activity.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class FirebaseActivityRepository extends ActivityRepository {
   final ActivityService _activityService = ActivityService();
@@ -57,4 +58,8 @@ class FirebaseActivityRepository extends ActivityRepository {
   Future<List<Map<String, dynamic>>> fetchCollaborators() {
     return _activityService.fetchCollaborators();
   }
+
+  @override
+  // TODO: implement currentUser
+  String get currentUser => FirebaseAuth.instance.currentUser!.uid;
 }

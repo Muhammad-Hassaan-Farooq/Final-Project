@@ -29,6 +29,7 @@ class SignupForm extends StatelessWidget {
                     controller: signupFormState.email,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
+                      errorText: signupFormState.isError?signupFormState.error:null,
                       labelText: "Email Address",
                       labelStyle: TextStyle(
                           color: Theme.of(context).colorScheme.primary),
@@ -76,6 +77,7 @@ class SignupForm extends StatelessWidget {
                     controller: signupFormState.password,
                     obscureText: true,
                     decoration: InputDecoration(
+                      errorText: signupFormState.isError?signupFormState.error:null,
                       labelText: "Password",
                       labelStyle: TextStyle(
                           color: Theme.of(context).colorScheme.primary),
@@ -121,6 +123,7 @@ class SignupForm extends StatelessWidget {
                     controller: signupFormState.passwordConfirm,
                     obscureText: true,
                     decoration: InputDecoration(
+                      errorText: signupFormState.isError?signupFormState.error:null,
                       labelText: "Confirm Password",
                       labelStyle: TextStyle(
                           color: Theme.of(context).colorScheme.primary),
@@ -215,12 +218,6 @@ class SignupForm extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [Icon(Icons.mail), Text("Google")],
                         )),
-                    ElevatedButton(
-                        onPressed: () {},
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [Icon(Icons.facebook), Text("Facebook")],
-                        ))
                   ],
                 )
               ],

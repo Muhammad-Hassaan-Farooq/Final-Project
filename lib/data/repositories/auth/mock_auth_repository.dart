@@ -12,6 +12,12 @@ class MockAuthRepository extends AuthRepository {
   bool get isAuthStateLoaded{
     return _isAuthStateLoaded;
   }
+  set setAuthState(bool authState){
+    _isAuthStateLoaded = authState;
+  }
+  set setLoggedInState(bool authState){
+    _isLoggedIn = authState;
+  }
 
 
   @override

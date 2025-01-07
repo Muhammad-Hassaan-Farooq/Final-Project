@@ -32,6 +32,7 @@ class LoginForm extends StatelessWidget {
                     controller: loginFormState.email,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
+                      errorText: loginFormState.isError?loginFormState.error:null,
                       labelText: "Email Address",
                       labelStyle: TextStyle(
                           color: Theme.of(context).colorScheme.primary),
@@ -79,6 +80,7 @@ class LoginForm extends StatelessWidget {
                     controller: loginFormState.password,
                     obscureText: true,
                     decoration: InputDecoration(
+                      errorText: loginFormState.isError?loginFormState.error:null,
                       labelText: "Password",
                       labelStyle: TextStyle(
                           color: Theme.of(context).colorScheme.primary),
@@ -200,13 +202,6 @@ class LoginForm extends StatelessWidget {
                         Text("Google")
                       ],
                     )),
-                    ElevatedButton(onPressed: (){}, child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Icon(Icons.facebook),
-                        Text("Facebook")
-                      ],
-                    ))
                   ],
                 )
               ],

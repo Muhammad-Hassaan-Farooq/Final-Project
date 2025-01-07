@@ -108,7 +108,9 @@ class ActivityCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
+                      overflow:TextOverflow.ellipsis,
                     ),
+                    maxLines: 1,
                   ),
                 ],
               ),

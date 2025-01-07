@@ -81,12 +81,10 @@ class MockActivityRepository extends ActivityRepository {
 
   @override
   Stream<List<Activity>> getTodaysActivitiesStream() {
-    return Stream.periodic(Duration(seconds: 5), (_) {
-      // Simulate fetching updated activities
-      return _mockActivities.where((activity) {
+    return Stream.value(
+      _mockActivities.where((activity) {
         return activity.startTime != null && activity.startTime!.isAfter(DateTime.now());
-      }).toList();
-    });
+      }).toList());
   }
 
   @override
@@ -161,8 +159,11 @@ class MockActivityRepository extends ActivityRepository {
 
   @override
   Future<List<Map<String, dynamic>>> fetchCollaborators() {
-    return Future.delayed(Duration(seconds: 1));
+    return Future.delayed(Duration(microseconds: 2));
   }
+
+  @override
+  String get currentUser => "user_001";
 
 
 }

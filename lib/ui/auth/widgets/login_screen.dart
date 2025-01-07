@@ -16,6 +16,7 @@ class LoginScreen extends StatelessWidget {
     return ChangeNotifierProvider.value(
       value: viewModel,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: Theme.of(context).primaryColor,
         body: Consumer<LoginViewModel>(
           builder: (context, viewModel, child) {

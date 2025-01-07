@@ -9,4 +9,5 @@ abstract class AuthRepository extends ChangeNotifier{
   Future<void> getAuthStatus();
   Future<void> signInWithGoogle();
   Future<void> signUp(String email, String password);
+
 }

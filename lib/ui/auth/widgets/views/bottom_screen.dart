@@ -35,7 +35,7 @@ class _BottomScreen extends State<BottomScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return Flexible(
       child: Container(
           height: double.infinity,
           width: double.infinity,

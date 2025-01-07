@@ -31,7 +31,6 @@ class Layout extends StatelessWidget {
       OldActivities(
           viewModel:
           OldActivitiesViewModel(activityRepository: context.read())),
-      Center(child: Text("Calendar View")),
     ];
 
     return ChangeNotifierProvider.value(
@@ -55,15 +54,13 @@ class Layout extends StatelessWidget {
                 type: BottomNavigationBarType.fixed,
                 unselectedItemColor: Colors.white,
                 selectedItemColor: Theme.of(context).colorScheme.secondary,
-                items: [
+                items: const [
                   BottomNavigationBarItem(
                       icon: Icon(Icons.home), label: "Today"),
                   BottomNavigationBarItem(
                       icon: Icon(Icons.upcoming), label: "Upcoming"),
                   BottomNavigationBarItem(
                       icon: Icon(Icons.history), label: "History"),
-                  BottomNavigationBarItem(
-                      icon: Icon(Icons.calendar_month), label: "Calender"),
                 ]),
           );
         },

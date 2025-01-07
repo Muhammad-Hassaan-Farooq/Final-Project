@@ -57,7 +57,7 @@ class TodayActivitiesViewModel extends ChangeNotifier {
   }
 
   bool isOwn(Activity activity) {
-    return activity.ownerId == FirebaseAuth.instance.currentUser!.uid;
+    return activity.ownerId == _activityRepository.currentUser;
   }
 
   Future<void> changeFilter(Filter filter) async {
