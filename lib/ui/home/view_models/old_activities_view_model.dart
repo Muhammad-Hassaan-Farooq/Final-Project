@@ -10,6 +10,8 @@ class OldActivitiesViewModel extends ChangeNotifier {
   Filter _currentFilter;
   Filter get currentFilter =>_currentFilter;
 
+  Stream<List<Activity>>? _activityStream;
+
   late List<Activity> _activities;
   List<Activity> get activities {
     switch(_currentFilter){
@@ -29,13 +31,36 @@ class OldActivitiesViewModel extends ChangeNotifier {
   OldActivitiesViewModel({required ActivityRepository activityRepository})
       : _activityRepository = activityRepository,
         _currentFilter = Filter.ALL,
-        _status = Status.LOADING;
+        _status = Status.LOADING{
+    init();
+  }
+
+  void init() {
+    _activityStream = _activityRepository.getPastActivities();
+    _activityStream!.listen(
+          (updatedActivities) {
+        _activities = updatedActivities;
+        _activities.sort((a, b) => a.startTime!.compareTo(b.startTime!));
+        _status = Status.SUCCESS;
+        notifyListeners();
+      },
+      onError: (error) {
+            print(error);
+        _status = Status.ERROR;
+        notifyListeners();
+      },
+    );
+  }
 
   Future<void> changeFilter(Filter filter) async {
-    _status = Status.LOADING;
     _currentFilter = filter;
-    _activities = await _activityRepository.getPastActivities("");
-    _status = Status.SUCCESS;
     notifyListeners();
+  }
+
+  void delete(String activityId){
+    _activityRepository.deleteActivity(activityId);
+  }
+  void remove(String activityId){
+    _activityRepository.removeActivity(activityId);
   }
 }

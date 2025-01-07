@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -20,6 +21,15 @@ class AuthService{
       email: email,
       password: password,
     );
+
+
+      final usersCollection = FirebaseFirestore.instance.collection('users');
+      final user = result.user!;
+      await usersCollection.doc(user.uid).set({
+        'displayName': user.displayName ?? 'Anonymous',
+        'email': email,
+        'createdAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
     return result.user;
   }
 

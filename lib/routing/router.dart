@@ -1,5 +1,8 @@
 import 'package:final_project/data/repositories/auth/auth_repository.dart';
+import 'package:final_project/domain/home/activity.dart';
 import 'package:final_project/routing/routes.dart';
+import 'package:final_project/ui/activity/view_models/activity_view_model.dart';
+import 'package:final_project/ui/activity/widgets/activity_notes.dart';
 import 'package:final_project/ui/auth/widgets/login_screen.dart';
 import 'package:final_project/ui/core/widgets/splash_screen.dart';
 import 'package:final_project/ui/home/view_models/layout_view_model.dart';
@@ -17,7 +20,7 @@ GoRouter router(
   AuthRepository authRepository,
 ) =>
     GoRouter(
-        initialLocation: Routes.home,
+        initialLocation: Routes.splash,
         debugLogDiagnostics: true,
         refreshListenable: authRepository,
         redirect: (context, state) {
@@ -53,7 +56,7 @@ GoRouter router(
               builder: (context, state) {
                 return Layout(
                   viewModel: LayoutViewModel(authRepository: context.read()),
-                  title: "Home Screem",
+                  title: "Activities",
                 );
               }),
           GoRoute(
@@ -63,5 +66,17 @@ GoRouter router(
                   viewModel:
                       SplashScreenViewModel(authRepository: context.read()),
                 );
-              })
+              }),
+          GoRoute(
+              path: '${Routes.activityNotes}/:id',
+              builder: (context, state) {
+                final activityId = state.pathParameters['id']!;
+                final activity = state.extra as Activity;
+                return ActivityNotes(
+                    viewModel: ActivityViewModel(
+                        activityRepository: context.read(),
+                        noteRepository: context.read(),
+                        activityId: activityId,
+                        activity:activity ));
+              }),
         ]);

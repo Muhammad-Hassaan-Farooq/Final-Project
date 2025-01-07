@@ -28,24 +28,33 @@ class FirebaseActivityRepository extends ActivityRepository {
   Future<void> deleteActivity(String activityId) async {
     await _activityService.deleteActivity(activityId);
   }
+  @override
+  Future<void> removeActivity(String activityId) async {
+    await _activityService.removeActivity(activityId);
+  }
 
   @override
   Future<Activity?> getActivityById(String activityId) async {
     return await _activityService.getActivityById(activityId);
   }
   @override
-  Future<List<Activity>> getTodaysActivities(String userId) async{
+  Stream<List<Activity>> getTodaysActivitiesStream(){
 
-    return await _activityService.getTodaysActivities(userId);
+    return _activityService.getTodaysActivities();
   }
 
   @override
-  Future<List<Activity>> getUpcomingActivites(String userId) async{
-    return await _activityService.getFutureActivities(userId);
+  Stream<List<Activity>> getUpcomingActivites(){
+    return _activityService.getFutureActivities();
   }
 
   @override
-  Future<List<Activity>> getPastActivities(String userId) async {
-    return await _activityService.getPastActivities(userId);
+  Stream<List<Activity>> getPastActivities() {
+    return _activityService.getPastActivities();
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> fetchCollaborators() {
+    return _activityService.fetchCollaborators();
   }
 }

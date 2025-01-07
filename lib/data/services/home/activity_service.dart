@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_project/domain/home/activity.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ActivityService {
+
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<List<Activity>> getActivitiesForUser(String userId) async {
@@ -15,22 +17,63 @@ class ActivityService {
         .toList();
   }
 
+  Future<List<Map<String, dynamic>>> fetchCollaborators() async {
+    try {
+      final usersCollection = FirebaseFirestore.instance.collection('users');
+      final snapshot = await usersCollection.get();
+
+      return snapshot.docs
+          .where((doc) => doc.id != FirebaseAuth.instance.currentUser!.uid)
+          .map((doc) => {
+        'uid': doc.id,
+        'displayName': doc['displayName'],
+        'email': doc['email'],
+      })
+          .toList();
+    } catch (e) {
+      return [];
+    }
+  }
+
   Future<void> addActivity(Activity activity) async {
     await _firestore
         .collection('activities')
-        .doc(activity.id)
-        .set(activity.toJson());
+        .add({
+      'title': activity.title,
+      'ownerId': FirebaseAuth.instance.currentUser!.uid,
+      'collaborators': activity.collaborators,
+      'status': activity.status,
+      'category': activity.category,
+      "startTime": activity.startTime,
+      "endTime":activity.endTime,
+      "duration":activity.duration
+    });
   }
 
   Future<void> updateActivity(Activity activity) async {
     await _firestore
         .collection('activities')
         .doc(activity.id)
-        .update(activity.toJson());
+        .update({
+      'title': activity.title,
+      'collaborators': activity.collaborators,
+      'status': activity.status,
+      'category': activity.category,
+      "startTime": activity.startTime,
+      "endTime":activity.endTime,
+      "duration":activity.duration
+    });
   }
 
   Future<void> deleteActivity(String activityId) async {
     await _firestore.collection('activities').doc(activityId).delete();
+  }
+  
+  Future<void> removeActivity(String activityId) async{
+    final User user = FirebaseAuth.instance.currentUser!;
+    await _firestore.collection('activities').doc(activityId).update({
+      'collaborators': FieldValue.arrayRemove([user.uid])
+    });
   }
 
   Future<Activity?> getActivityById(String activityId) async {
@@ -40,49 +83,71 @@ class ActivityService {
     }
     return null;
   }
-  Future<List<Activity>> getTodaysActivities(String userId) async {
-    final now = DateTime.now();
-    final startOfDay = DateTime(now.year, now.month, now.day); // 00:00 of today
-    final endOfDay = startOfDay.add(Duration(days: 1)); // 23:59 of today
+  Stream<List<Activity>> getTodaysActivities() {
 
-    final querySnapshot = await _firestore
+    final User user = FirebaseAuth.instance.currentUser!;
+    final now = DateTime.now();
+    final startOfDay = DateTime(now.year, now.month, now.day);
+    final endOfDay = startOfDay.add(Duration(days: 1));
+
+    return _firestore
         .collection('activities')
-        .where('ownerId', isEqualTo: userId)
         .where('startTime', isGreaterThanOrEqualTo: startOfDay)
         .where('startTime', isLessThan: endOfDay)
-        .get();
+        .snapshots()
+        .map((querySnapshot) {
 
-    return querySnapshot.docs
-        .map((doc) => Activity.fromJson(doc.data()))
-        .toList();
-  }
-  Future<List<Activity>> getFutureActivities(String userId) async {
-    final now = DateTime.now();
-    final startOfDay = DateTime(now.year, now.month, now.day); // 00:00 of today
-
-    final querySnapshot = await _firestore
-        .collection('activities')
-        .where('ownerId', isEqualTo: userId)
-        .where('startTime', isGreaterThan: startOfDay) // Exclude today
-        .get();
-
-    return querySnapshot.docs
-        .map((doc) => Activity.fromJson(doc.data()))
-        .toList();
+      return querySnapshot.docs
+          .where((doc) {
+        final data = doc.data();
+        return data['ownerId'] == user.uid || (data['collaborators'] as List).contains(user.uid);
+      })
+          .map((doc) => Activity.fromFirestore(doc))
+          .toList();
+    });
   }
 
-  Future<List<Activity>> getPastActivities(String userId) async {
+  Stream<List<Activity>> getFutureActivities() {
+    final User user = FirebaseAuth.instance.currentUser!;
     final now = DateTime.now();
-    final startOfDay = DateTime(now.year, now.month, now.day); // 00:00 of today
+    final startOfDay = DateTime(now.year, now.month, now.day);
+    final endOfDay = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
 
-    final querySnapshot = await _firestore
+    return _firestore
         .collection('activities')
-        .where('ownerId', isEqualTo: userId)
-        .where('endTime', isLessThan: startOfDay) // Exclude today
-        .get();
+        .where('startTime', isGreaterThanOrEqualTo: endOfDay)
+        .snapshots()
+        .map((querySnapshot) {
 
-    return querySnapshot.docs
-        .map((doc) => Activity.fromJson(doc.data()))
-        .toList();
+      return querySnapshot.docs
+          .where((doc) {
+        final data = doc.data();
+        return data['ownerId'] == user.uid || (data['collaborators'] as List).contains(user.uid);
+      })
+          .map((doc) => Activity.fromFirestore(doc))
+          .toList();
+    });
+  }
+
+  Stream<List<Activity>> getPastActivities() {
+    final User user = FirebaseAuth.instance.currentUser!;
+    final now = DateTime.now();
+    final startOfDay = DateTime(now.year, now.month, now.day);
+
+    return _firestore
+        .collection('activities')
+        .where('startTime', isLessThanOrEqualTo: startOfDay)
+        .where('collaborators', arrayContains: user.uid) // Check if user is in collaborators
+        .snapshots()
+        .map((querySnapshot) {
+      return querySnapshot.docs
+          .where((doc) {
+        final data = doc.data();
+        return data['ownerId'] == user.uid || (data['collaborators'] as List).contains(user.uid);
+      })
+          .map((doc) => Activity.fromFirestore(doc))
+          .toList();
+    });
+
   }
 }

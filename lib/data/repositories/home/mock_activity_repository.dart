@@ -80,11 +80,11 @@ class MockActivityRepository extends ActivityRepository {
   }
 
   @override
-  Future<List<Activity>> getTodaysActivities(String userId) {
-    final now = DateTime.now();
-    return Future.delayed(Duration(seconds: 1), () {
+  Stream<List<Activity>> getTodaysActivitiesStream() {
+    return Stream.periodic(Duration(seconds: 5), (_) {
+      // Simulate fetching updated activities
       return _mockActivities.where((activity) {
-        return activity.startTime != null && activity.startTime!.isAfter(now);
+        return activity.startTime != null && activity.startTime!.isAfter(DateTime.now());
       }).toList();
     });
   }
@@ -118,24 +118,51 @@ class MockActivityRepository extends ActivityRepository {
   }
 
   @override
-  Future<List<Activity>> getUpcomingActivites(String userId) {
+  Stream<List<Activity>> getUpcomingActivites() {
     final now = DateTime.now();
+    final startOfDay = DateTime(now.year, now.month, now.day); // Start of today
     final tomorrow = DateTime(now.year, now.month, now.day + 1); // Start of tomorrow
 
-    return Future.delayed(const Duration(seconds: 1), () {
-      return _mockActivities.where((activity) {
+    return Stream.value(
+      _mockActivities.where((activity) {
+        // Filter activities based on startTime being after tomorrow
         return activity.startTime != null && activity.startTime!.isAfter(tomorrow);
-      }).toList();
-    });
+      }).toList(),
+    );
+  }
+
+
+  @override
+  Stream<List<Activity>> getPastActivities() {
+    final now = DateTime.now();
+    final startOfDay = DateTime(now.year, now.month, now.day);
+    final today = DateTime(now.year, now.month, now.day);
+
+    return Stream.value(
+      _mockActivities.where((activity) {
+        return activity.startTime != null && activity.startTime!.isBefore(today);
+      }).toList(),
+    );
   }
 
   @override
-  Future<List<Activity>> getPastActivities(String userId) {
-    final now = DateTime.now();
-    return Future.delayed(Duration(seconds: 1), () {
-      return _mockActivities.where((activity) {
-        return activity.endTime != null && activity.endTime!.isBefore(now);
-      }).toList();
-    });
+  Future<void> removeActivity(String activityId) async {
+    final index = _mockActivities.indexWhere((activity) => activity.id == activityId);
+    if (index != -1) {
+      final activity = _mockActivities[index];
+      final updatedCollaborators = List<String>.from(activity.collaborators)
+        ..remove('user_001');
+
+      _mockActivities[index] = activity.copyWith(
+        collaborators: updatedCollaborators,
+      );
+    }
   }
+
+  @override
+  Future<List<Map<String, dynamic>>> fetchCollaborators() {
+    return Future.delayed(Duration(seconds: 1));
+  }
+
+
 }

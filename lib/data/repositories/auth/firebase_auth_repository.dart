@@ -72,6 +72,7 @@ class FirebaseAuthRepository extends AuthRepository{
     try {
       final user = await _authService.signUpWithEmail(email, password);
       _isLoggedIn= user != null;
+
     } catch (e) {
       _isLoggedIn = false;
     }

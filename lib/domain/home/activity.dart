@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Activity {
   final String id;
   final String ownerId;
@@ -49,6 +51,30 @@ class Activity {
             : null,
         category: json['category'],
       );
+
+  factory Activity.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+
+    return Activity(
+      id: doc.id,
+      title: data['title'] ?? '',
+      ownerId: data['ownerId'] ?? '',
+      collaborators: data['collaborators'] != null
+          ? List<String>.from(data['collaborators'])
+          : [],
+      status: data['status'] ?? 'Incomplete',
+      startTime: data['startTime'] != null
+          ? (data['startTime'] as Timestamp).toDate()
+          : null,
+      endTime: data['endTime'] != null
+          ? (data['endTime'] as Timestamp).toDate()
+          : null,
+      duration: data['duration'] != null
+          ? Duration(seconds: data['duration'])
+          : null,
+      category: data['category'] ?? '',
+    );
+  }
 
   Activity copyWith({
     String? id,

@@ -2,22 +2,23 @@
 import 'package:flutter/material.dart';
 
 abstract class ActivityRepository extends ChangeNotifier {
-  /// Fetch all activities for a specific user
+
   Future<List<Activity>> getActivities(String userId);
 
-  /// Add a new activity
   Future<void> addActivity(Activity activity);
 
-  /// Update an existing activity
   Future<void> updateActivity(Activity activity);
 
-  /// Delete an activity by its ID
   Future<void> deleteActivity(String activityId);
+
+  Future<void> removeActivity(String activityId);
 
   /// Get a single activity by its ID
   Future<Activity?> getActivityById(String activityId);
-  Future<List<Activity>> getTodaysActivities(String userId);
-  Future<List<Activity>> getUpcomingActivites(String userId);
-  Future<List<Activity>> getPastActivities(String userId);
+  Stream<List<Activity>> getTodaysActivitiesStream();
+  Stream<List<Activity>> getUpcomingActivites();
+  Stream<List<Activity>> getPastActivities();
+
+  Future<List<Map<String, dynamic>>> fetchCollaborators();
   }
 

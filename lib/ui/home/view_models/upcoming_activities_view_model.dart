@@ -23,19 +23,43 @@ class UpcomingActivitiesViewModel extends ChangeNotifier {
     }
   }
 
+  Stream<List<Activity>>? _activityStream;
+
   Status _status ;
   Status get currentStatus => _status;
 
   UpcomingActivitiesViewModel({required ActivityRepository activityRepository})
       : _activityRepository = activityRepository,
         _currentFilter = Filter.ALL,
-        _status = Status.LOADING;
+        _status = Status.LOADING{
+    init();
+  }
+
+  void init() {
+    _activityStream = _activityRepository.getUpcomingActivites();
+    _activityStream!.listen(
+          (updatedActivities) {
+        _activities = updatedActivities;
+        _status = Status.SUCCESS;
+        _activities.sort((a, b) => a.startTime!.compareTo(b.startTime!));
+        notifyListeners();
+      },
+      onError: (error) {
+        _status = Status.ERROR;
+        notifyListeners();
+      },
+    );
+  }
 
   Future<void> changeFilter(Filter filter) async {
-    _status = Status.LOADING;
     _currentFilter = filter;
-    _activities = await _activityRepository.getUpcomingActivites("");
-    _status = Status.SUCCESS;
     notifyListeners();
+  }
+
+  void delete(String activityId){
+    _activityRepository.deleteActivity(activityId);
+  }
+  void remove(String activityId){
+    _activityRepository.removeActivity(activityId);
   }
 }

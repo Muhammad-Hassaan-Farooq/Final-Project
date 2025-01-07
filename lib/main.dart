@@ -12,12 +12,11 @@ void main() async{
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  dev.main();
-  // runApp(
-  //     MultiProvider(
-  //       providers: providersNetwork,
-  //       child:const ChronscribeApp(),)
-  // );
+  runApp(
+      MultiProvider(
+        providers: providersNetwork,
+        child:const ChronscribeApp(),)
+  );
 }
 
 
