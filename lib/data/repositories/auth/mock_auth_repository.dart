@@ -55,7 +55,7 @@ class MockAuthRepository extends AuthRepository {
 
   @override
   Future<void> signUp(String email, String password) async{
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 2000));
     _isLoggedIn =  true;
   }
 }

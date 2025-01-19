@@ -1,49 +1,44 @@
-import 'dart:math';
+import 'package:final_project/ui/auth/bloc/auth_bloc.dart';
 import 'package:final_project/ui/auth/widgets/views/auth_screen.dart';
 import 'package:final_project/ui/auth/widgets/views/start_screen.dart';
 import 'package:flutter/material.dart' hide Page;
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../view_models/login_view_model.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key, required this.viewModel});
-
-  final LoginViewModel viewModel;
+  const LoginScreen({super.key, required this.authBloc});
+  final AuthBloc authBloc;
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
-      value: viewModel,
+    return BlocProvider.value(
+      value: authBloc,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Theme.of(context).primaryColor,
-        body: Consumer<LoginViewModel>(
-          builder: (context, viewModel, child) {
+        body: BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) {
             return AnimatedSwitcher(
               duration: const Duration(milliseconds: 250),
               transitionBuilder: (child, animation) {
-
                 final reverse = animation.drive(Tween(begin: 1.0, end: 0.0));
-                bool isMovingForward = viewModel.currentPage == Page.AUTH;
-
+                bool isMovingForward = state is AuthScreenState;
 
                 final slideAnimation = animation.drive(
-                  Tween<Offset>(
+                  Tween(
                     begin: Offset(isMovingForward ? 1.0 : -1.0, 0.0),
                     end: Offset.zero,
                   ),
                 );
 
-
                 final slideOutAnimation = reverse.drive(
-                  Tween<Offset>(
+                  Tween(
                     begin: Offset.zero,
                     end: Offset(isMovingForward ? -1.0 : 1.0, 0.0),
                   ),
                 );
 
-                final currentAnimation = child.key == ValueKey(viewModel.currentPage)
+                final currentAnimation = child.key == ValueKey(state.runtimeType)
                     ? slideAnimation
                     : slideOutAnimation;
 
@@ -53,23 +48,26 @@ class LoginScreen extends StatelessWidget {
                 );
               },
               child: Builder(
-                key: ValueKey(viewModel.currentPage),
+                key: ValueKey(state.runtimeType),
                 builder: (context) {
-                  switch (viewModel.currentPage) {
-                    case Page.START:
-                      return StartScreen(
-                        updatePage: () => viewModel.updatePage(Page.AUTH),
-                      );
-                    case Page.AUTH:
-                      return AuthScreen(
-                        updatePage: () => viewModel.updatePage(Page.START),
-                        loginForm: viewModel.loginForm,
-                        changeRememberMe: viewModel.setRememberMe,
-                        signupFormState: viewModel.signupForm,
-                        register: viewModel.register,
-                        login: viewModel.login,
-                        google:viewModel.signInWithGoogle
-                      );
+                  if (state is StartScreenState) {
+                    return StartScreen(
+                      updatePage: () => {
+                        context
+                            .read<AuthBloc>()
+                            .add(const ChangePageEvent(page: Page.AUTH))
+                      },
+                    );
+                  } else if (state is AuthScreenState) {
+                    return AuthScreen(
+                      updatePage: () => {
+                        context
+                            .read<AuthBloc>()
+                            .add(const ChangePageEvent(page: Page.START))
+                      },
+                    );
+                  } else {
+                    return Container();
                   }
                 },
               ),

@@ -1,7 +1,6 @@
 import 'package:final_project/data/repositories/auth/auth_repository.dart';
 import 'package:final_project/data/services/auth/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 
 class FirebaseAuthRepository extends AuthRepository{
 

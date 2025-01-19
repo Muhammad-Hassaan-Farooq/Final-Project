@@ -3,17 +3,15 @@ import 'package:final_project/domain/home/activity.dart';
 import 'package:final_project/routing/routes.dart';
 import 'package:final_project/ui/activity/view_models/activity_view_model.dart';
 import 'package:final_project/ui/activity/widgets/activity_notes.dart';
+import 'package:final_project/ui/auth/bloc/auth_bloc.dart';
 import 'package:final_project/ui/auth/widgets/login_screen.dart';
 import 'package:final_project/ui/core/widgets/splash_screen.dart';
+import 'package:final_project/ui/home/bloc/navbar/home_page_bloc.dart';
 import 'package:final_project/ui/home/view_models/layout_view_model.dart';
-import 'package:final_project/ui/home/view_models/today_activities_view_model.dart';
 import 'package:final_project/ui/home/widgets/layout.dart';
-import 'package:final_project/ui/home/widgets/today_activities.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../ui/auth/view_models/login_view_model.dart';
 import '../ui/core/view_models/splash_screen_view_model.dart';
 
 GoRouter router(
@@ -48,14 +46,14 @@ GoRouter router(
               path: Routes.login,
               builder: (context, state) {
                 return LoginScreen(
-                  viewModel: LoginViewModel(authRepository: context.read()),
+                  authBloc: AuthBloc(authRepository: context.read()),
                 );
               }),
           GoRoute(
               path: Routes.home,
               builder: (context, state) {
                 return Layout(
-                  viewModel: LayoutViewModel(authRepository: context.read()),
+                  navBarBloc: HomePageBloc(activityRepository: context.read()),
                   title: "Activities",
                 );
               }),

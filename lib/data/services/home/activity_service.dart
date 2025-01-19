@@ -137,7 +137,6 @@ class ActivityService {
     return _firestore
         .collection('activities')
         .where('startTime', isLessThanOrEqualTo: startOfDay)
-        .where('collaborators', arrayContains: user.uid) // Check if user is in collaborators
         .snapshots()
         .map((querySnapshot) {
       return querySnapshot.docs

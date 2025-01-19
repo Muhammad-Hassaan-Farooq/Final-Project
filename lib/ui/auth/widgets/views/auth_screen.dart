@@ -4,21 +4,9 @@ import 'package:flutter/material.dart';
 
 class AuthScreen extends StatelessWidget {
   final void Function() updatePage;
-  final LoginFormState loginForm;
-  final void Function(bool) changeRememberMe;
-  final SignupFormState signupFormState;
-  final Future<void> Function() register;
-  final Future<void> Function() login;
-  final Future<void> Function() google;
   const AuthScreen(
       {super.key,
-      required this.updatePage,
-      required this.loginForm,
-      required this.changeRememberMe,
-      required this.signupFormState,
-      required this.register,
-      required this.login,
-      required this.google});
+      required this.updatePage,});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +14,7 @@ class AuthScreen extends StatelessWidget {
         child: Column(
       children: [
         Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Column(
               children: [
                 Row(
@@ -56,7 +44,7 @@ class AuthScreen extends StatelessWidget {
                         )),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Row(
@@ -73,7 +61,7 @@ class AuthScreen extends StatelessWidget {
                     )
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Row(
@@ -95,19 +83,13 @@ class AuthScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
               ],
             )),
 
-              BottomScreen(
-                  loginForm: loginForm,
-                  changeRememberMe: changeRememberMe,
-                  signupFormState: signupFormState,
-                  register: register,
-                  login: login,
-                  google: google)
+              const BottomScreen()
             ],
           ),
     );

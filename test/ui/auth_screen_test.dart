@@ -1,4 +1,5 @@
 import 'package:final_project/data/repositories/auth/mock_auth_repository.dart';
+import 'package:final_project/ui/auth/bloc/auth_bloc.dart';
 import 'package:final_project/ui/auth/view_models/login_view_model.dart';
 import 'package:final_project/ui/auth/widgets/login_screen.dart';
 import 'package:final_project/ui/core/theme.dart';
@@ -15,7 +16,7 @@ void main(){
     await tester.pumpWidget(
         MaterialApp(
           theme: lightTheme,
-          home: LoginScreen(viewModel: LoginViewModel(authRepository: MockAuthRepository())),
+          home: LoginScreen(authBloc: AuthBloc(authRepository: MockAuthRepository()),),
         )
     );
 
@@ -29,11 +30,10 @@ void main(){
     tester.view.devicePixelRatio = 3.0;
 
     LoginViewModel viewModel = LoginViewModel(authRepository: MockAuthRepository());
-    viewModel.updatePage(Page.AUTH);
     await tester.pumpWidget(
         MaterialApp(
           theme: lightTheme,
-          home: LoginScreen(viewModel: viewModel),
+          home: LoginScreen(authBloc: AuthBloc(authRepository: MockAuthRepository())),
         )
     );
     await expectLater(find.byType(LoginScreen),

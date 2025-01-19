@@ -31,13 +31,13 @@ class ActivityNotes extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             height: 100,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 16,
                           ),
-                          Expanded(
+                          const Expanded(
                             child: Divider(
                               color: Colors.grey, // Color of the line
                               thickness: 1, // Thickness of the line
@@ -49,46 +49,58 @@ class ActivityNotes extends StatelessWidget {
                             child: Text(
                               DateFormat('hh:mm a')
                                   .format(_viewModel.activity.startTime!),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 16,
                                 color: Colors.grey, // Text color
                               ),
                             ),
                           ),
                           // Right Line
-                          Expanded(
+                          const Expanded(
                             child: Divider(
                               color: Colors.grey, // Color of the line
                               thickness: 1, // Thickness of the line
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 16,
                           )
                         ],
                       ),
                       switch (_viewModel.currentState) {
-                        UIState.LOADING => Center(
+                        UIState.LOADING => const Center(
                             child: CircularProgressIndicator(),
                           ),
                         UIState.SUCCESS => _viewModel.notes.isEmpty
-                            ? Center(
+                            ? const Center(
                                 child: Text("No Notes? Start writing"),
                               )
                             : Column(
                           children: _viewModel.notes.map((note) {
                             return FutureBuilder<String>(
-                              future: _viewModel.getEmail(note.userId), // Fetch email for each note
+                              future: _viewModel.getEmail(note.userId),
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return CircularProgressIndicator(); // Show loading indicator while fetching email
+                                  return TextNote(
+                                    content: note.content,
+                                    time: note.timestamp,
+                                    user: note.userId,
+                                    isOwn: _viewModel.userID == note.userId,
+                                    delete: () {
+                                      _viewModel.deleteNote(note.id);
+                                    },
+                                    showModal: () {
+                                      _showUpdateNoteModal(context, _viewModel, note);
+                                    },
+                                    email: "",
+                                  );
                                 }
 
                                 if (snapshot.hasError) {
-                                  return Text('Error fetching email');
+                                  return const Text('Error fetching email');
                                 }
 
-                                // Get email from snapshot
+
                                 String email = snapshot.data ?? 'No email found';
 
                                 return TextNote(
@@ -102,24 +114,24 @@ class ActivityNotes extends StatelessWidget {
                                   showModal: () {
                                     _showUpdateNoteModal(context, _viewModel, note);
                                   },
-                                  email: email, // Pass the email to TextNote widget
+                                  email: email,
                                 );
                               },
                             );
                           }).toList(),
                         ),
                         UIState.ERROR =>
-                          Center(child: Text("Error loading notes")),
+                          const Center(child: Text("Error loading notes")),
                       },
                       Row(
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             height: 100,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 16,
                           ),
-                          Expanded(
+                          const Expanded(
                             child: Divider(
                               color: Colors.grey,
                               thickness: 1,
@@ -131,20 +143,20 @@ class ActivityNotes extends StatelessWidget {
                             child: Text(
                               DateFormat('hh:mm a')
                                   .format(_viewModel.activity.endTime!),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 16,
                                 color: Colors.grey,
                               ),
                             ),
                           ),
                           // Right Line
-                          Expanded(
+                          const Expanded(
                             child: Divider(
                               color: Colors.grey,
                               thickness: 1,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 16,
                           )
                         ],
@@ -157,11 +169,11 @@ class ActivityNotes extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Padding(
-                            padding: EdgeInsets.all(16),
+                            padding: const EdgeInsets.all(16),
                             child: IconButton(
                               onPressed: () =>
                                   _showAddNoteModal(context, _viewModel),
-                              icon: Icon(Icons.add),
+                              icon: const Icon(Icons.add),
                               style: IconButton.styleFrom(
                                   backgroundColor:
                                       Theme.of(context).colorScheme.surface,
@@ -170,7 +182,7 @@ class ActivityNotes extends StatelessWidget {
                           )
                         ],
                       )
-                    : SizedBox(),
+                    : const SizedBox(),
               ],
             );
           },

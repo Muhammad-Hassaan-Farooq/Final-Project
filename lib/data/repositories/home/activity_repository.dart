@@ -13,7 +13,7 @@ abstract class ActivityRepository extends ChangeNotifier {
 
   Future<void> removeActivity(String activityId);
 
-  /// Get a single activity by its ID
+
   Future<Activity?> getActivityById(String activityId);
   Stream<List<Activity>> getTodaysActivitiesStream();
   Stream<List<Activity>> getUpcomingActivites();

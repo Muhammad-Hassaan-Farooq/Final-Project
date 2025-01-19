@@ -1,20 +1,33 @@
-import 'package:final_project/ui/auth/view_models/login_view_model.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:final_project/ui/auth/bloc/auth_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class SignupForm extends StatelessWidget {
-  SignupForm(
-      {super.key,
-      required this.signupFormState,
-      required this.register,
-      required this.google});
+class SignupForm extends StatefulWidget {
+  const SignupForm({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _SignupForm();
+}
+
+class _SignupForm extends State<SignupForm> {
   final _formKey = GlobalKey<FormState>();
-  final SignupFormState signupFormState;
-  final Future<void> Function() register;
-  final Future<void> Function() google;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _passwordConfirmController =
+      TextEditingController();
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
+    final state = context.watch<AuthBloc>().state;
+    if (state is AuthScreenState && state.status == FormStatus.LOADING) {
+      isLoading = true;
+    }
+    else{
+      isLoading = false;
+    }
+
+
     return Column(
       children: [
         Form(
@@ -22,14 +35,13 @@ class SignupForm extends StatelessWidget {
             child: Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   child: TextFormField(
                     style:
                         TextStyle(color: Theme.of(context).colorScheme.primary),
-                    controller: signupFormState.email,
+                    controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
-                      errorText: signupFormState.isError?signupFormState.error:null,
                       labelText: "Email Address",
                       labelStyle: TextStyle(
                           color: Theme.of(context).colorScheme.primary),
@@ -50,7 +62,8 @@ class SignupForm extends StatelessWidget {
                               width: 1)),
                       errorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.red, width: 1)),
+                          borderSide:
+                              const BorderSide(color: Colors.red, width: 1)),
                       prefixIcon: Icon(
                         Icons.email,
                         color: Theme.of(context).colorScheme.primary,
@@ -70,14 +83,13 @@ class SignupForm extends StatelessWidget {
                 const SizedBox(height: 16),
                 // Password Field
                 Padding(
-                  padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                   child: TextFormField(
                     style:
                         TextStyle(color: Theme.of(context).colorScheme.primary),
-                    controller: signupFormState.password,
+                    controller: _passwordController,
                     obscureText: true,
                     decoration: InputDecoration(
-                      errorText: signupFormState.isError?signupFormState.error:null,
                       labelText: "Password",
                       labelStyle: TextStyle(
                           color: Theme.of(context).colorScheme.primary),
@@ -97,7 +109,8 @@ class SignupForm extends StatelessWidget {
                               width: 1)),
                       errorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.red, width: 1)),
+                          borderSide:
+                              const BorderSide(color: Colors.red, width: 1)),
                       prefixIcon: Icon(Icons.lock,
                           color: Theme.of(context).colorScheme.primary),
                     ),
@@ -108,22 +121,24 @@ class SignupForm extends StatelessWidget {
                       if (value.length < 6) {
                         return "Password must be at least 6 characters";
                       }
+                      if (value != _passwordConfirmController.text) {
+                        return "Passwords donot match";
+                      }
                       return null;
                     },
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 16,
                 ),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                   child: TextFormField(
                     style:
                         TextStyle(color: Theme.of(context).colorScheme.primary),
-                    controller: signupFormState.passwordConfirm,
+                    controller: _passwordConfirmController,
                     obscureText: true,
                     decoration: InputDecoration(
-                      errorText: signupFormState.isError?signupFormState.error:null,
                       labelText: "Confirm Password",
                       labelStyle: TextStyle(
                           color: Theme.of(context).colorScheme.primary),
@@ -143,28 +158,40 @@ class SignupForm extends StatelessWidget {
                               width: 1)),
                       errorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.red, width: 1)),
+                          borderSide:
+                              const BorderSide(color: Colors.red, width: 1)),
                       prefixIcon: Icon(Icons.lock,
                           color: Theme.of(context).colorScheme.primary),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "Please enter your password";
+                        return "Please confirm your password";
                       }
-                      if (value.length < 6) {
-                        return "Password must be at least 6 characters";
+                      if (value != _passwordController.text) {
+                        return "Passwords donot match";
                       }
                       return null;
                     },
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                   child: ElevatedButton(
-                    onPressed: () {
-                      register();
+                    onPressed: isLoading?null:() {
+                      if (_formKey.currentState?.validate() ?? false) {
+                        context.read<AuthBloc>().add(SignUpEvent(
+                            email: _emailController.text,
+                            password: _passwordController.text));
+                      }
                     },
-                    child: SizedBox(
+                    child: isLoading?const SizedBox(
+                      width: double.infinity,
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        ),
+                    ):const SizedBox(
                       width: double.infinity,
                       child: Text(
                         "Register",
@@ -173,19 +200,19 @@ class SignupForm extends StatelessWidget {
                     ),
                   ),
                 ),
-                Row(
+                const Row(
                   children: [
                     SizedBox(
                       width: 16,
                     ),
                     Expanded(
                       child: Divider(
-                        color: Colors.grey, // Color of the line
-                        thickness: 1, // Thickness of the line
+                        color: Colors.grey,
+                        thickness: 1,
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
                       child: Text(
                         "or continue with",
                         style: TextStyle(
@@ -206,15 +233,17 @@ class SignupForm extends StatelessWidget {
                     )
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 16,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ElevatedButton(
-                        onPressed: google,
-                        child: Row(
+                        onPressed:(){
+                          context.read<AuthBloc>().add(GoogleSignInEvent());
+                        },
+                        child: const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [Icon(Icons.mail), Text("Google")],
                         )),

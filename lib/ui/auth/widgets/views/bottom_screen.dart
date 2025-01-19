@@ -4,20 +4,8 @@ import 'package:final_project/ui/auth/widgets/views/signup_form.dart';
 import 'package:flutter/material.dart';
 
 class BottomScreen extends StatefulWidget {
-  final LoginFormState loginForm;
-  final void Function(bool) changeRememberMe;
-  final SignupFormState signupFormState;
-  final Future<void> Function() register;
-  final Future<void> Function() login;
-  final Future<void> Function() google;
   const BottomScreen(
-      {super.key,
-      required this.loginForm,
-      required this.changeRememberMe,
-      required this.signupFormState,
-      required this.register,
-      required this.login,
-      required this.google});
+      {super.key,});
 
   @override
   State<StatefulWidget> createState() => _BottomScreen();
@@ -39,7 +27,7 @@ class _BottomScreen extends State<BottomScreen>
       child: Container(
           height: double.infinity,
           width: double.infinity,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(32.0),
@@ -47,7 +35,7 @@ class _BottomScreen extends State<BottomScreen>
               )),
           child: Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
               PreferredSize(
@@ -70,7 +58,7 @@ class _BottomScreen extends State<BottomScreen>
                       dividerColor: Colors.transparent,
                       indicator: BoxDecoration(
                         color: Theme.of(context).colorScheme.primary,
-                        borderRadius: BorderRadius.all(Radius.circular(30)),
+                        borderRadius: const BorderRadius.all(Radius.circular(30)),
                       ),
                       labelColor: Colors.white,
                       unselectedLabelColor: Colors.black54,
@@ -82,21 +70,13 @@ class _BottomScreen extends State<BottomScreen>
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Expanded(
-                  child: TabBarView(controller: _tabController, children: [
-                SignupForm(
-                    signupFormState: widget.signupFormState,
-                    register: widget.register,
-                    google: widget.google),
-                LoginForm(
-                  loginFormState: widget.loginForm,
-                  changeRememberMe: widget.changeRememberMe,
-                  login:widget.login,
-                  google:widget.google
-                )
+                  child: TabBarView(controller: _tabController, children: const [
+                SignupForm(),
+                LoginForm()
               ]))
             ],
           )),

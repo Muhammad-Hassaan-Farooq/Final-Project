@@ -1,23 +1,33 @@
+import 'package:final_project/ui/auth/bloc/auth_bloc.dart';
 import 'package:final_project/ui/auth/view_models/login_view_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class LoginForm extends StatelessWidget {
+class LoginForm extends StatefulWidget {
+  const LoginForm({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _LoginForm();
+}
+
+class _LoginForm extends State<LoginForm> {
   final _formKey = GlobalKey<FormState>();
-  final LoginFormState loginFormState;
-  final void Function(bool) changeRememberMe;
-  final Future<void> Function() login;
-  final Future<void> Function() google;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  bool isLoading= false;
 
-  LoginForm(
-      {super.key,
-      required this.loginFormState,
-      required this.changeRememberMe,
-      required this.login,
-      required this.google});
 
   @override
   Widget build(BuildContext context) {
+
+    final state = context.watch<AuthBloc>().state;
+    if (state is AuthScreenState && state.status == FormStatus.LOADING) {
+      isLoading = true;
+    }
+    else{
+      isLoading = false;
+    }
     return Column(
       children: [
         Form(
@@ -25,14 +35,13 @@ class LoginForm extends StatelessWidget {
             child: Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   child: TextFormField(
                     style:
                         TextStyle(color: Theme.of(context).colorScheme.primary),
-                    controller: loginFormState.email,
+                    controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
-                      errorText: loginFormState.isError?loginFormState.error:null,
                       labelText: "Email Address",
                       labelStyle: TextStyle(
                           color: Theme.of(context).colorScheme.primary),
@@ -53,7 +62,8 @@ class LoginForm extends StatelessWidget {
                               width: 1)),
                       errorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.red, width: 1)),
+                          borderSide:
+                              const BorderSide(color: Colors.red, width: 1)),
                       prefixIcon: Icon(
                         Icons.email,
                         color: Theme.of(context).colorScheme.primary,
@@ -73,14 +83,13 @@ class LoginForm extends StatelessWidget {
                 const SizedBox(height: 16),
                 // Password Field
                 Padding(
-                  padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                   child: TextFormField(
                     style:
                         TextStyle(color: Theme.of(context).colorScheme.primary),
-                    controller: loginFormState.password,
+                    controller: _passwordController,
                     obscureText: true,
                     decoration: InputDecoration(
-                      errorText: loginFormState.isError?loginFormState.error:null,
                       labelText: "Password",
                       labelStyle: TextStyle(
                           color: Theme.of(context).colorScheme.primary),
@@ -100,7 +109,8 @@ class LoginForm extends StatelessWidget {
                               width: 1)),
                       errorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.red, width: 1)),
+                          borderSide:
+                              const BorderSide(color: Colors.red, width: 1)),
                       prefixIcon: Icon(Icons.lock,
                           color: Theme.of(context).colorScheme.primary),
                     ),
@@ -108,28 +118,30 @@ class LoginForm extends StatelessWidget {
                       if (value == null || value.isEmpty) {
                         return "Please enter your password";
                       }
-                      if (value.length < 6) {
-                        return "Password must be at least 6 characters";
-                      }
                       return null;
                     },
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
                         children: [
                           Checkbox(
-                              side: BorderSide(
-                                  color: Theme.of(context).colorScheme.primary),
-                              focusColor: Theme.of(context).colorScheme.primary,
-                              value: loginFormState.isRememberMe,
-                              onChanged: (value) {
-                                changeRememberMe(value!);
-                              }),
+                            side: BorderSide(
+                                color: Theme.of(context).colorScheme.primary),
+                            focusColor: Theme.of(context).colorScheme.primary,
+                            onChanged: (e) {
+                              context
+                                  .read<AuthBloc>()
+                                  .add(ChangeRememberMeEvent(val: e ?? false));
+                            },
+                            value: (context.watch<AuthBloc>().state
+                                    as AuthScreenState)
+                                .isRememberMe,
+                          ),
                           Text(
                             "Remember Me",
                             style: TextStyle(
@@ -148,10 +160,23 @@ class LoginForm extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                   child: ElevatedButton(
-                    onPressed: login,
-                    child: SizedBox(
+                    onPressed: isLoading?null:() {
+                      if (_formKey.currentState?.validate() ?? false) {
+                        context.read<AuthBloc>().add(SignInEvent(
+                            email: _emailController.text,
+                            password: _passwordController.text));
+                      }
+                    },
+                    child: isLoading?const SizedBox(
+                      width: double.infinity,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      ),
+                    ):const SizedBox(
                       width: double.infinity,
                       child: Text(
                         "Login",
@@ -160,17 +185,19 @@ class LoginForm extends StatelessWidget {
                     ),
                   ),
                 ),
-                Row(
+                const Row(
                   children: [
-                    SizedBox(width: 16,),
+                    SizedBox(
+                      width: 16,
+                    ),
                     Expanded(
                       child: Divider(
                         color: Colors.grey, // Color of the line
-                        thickness: 1,       // Thickness of the line
+                        thickness: 1, // Thickness of the line
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
                       child: Text(
                         "or login with",
                         style: TextStyle(
@@ -183,25 +210,28 @@ class LoginForm extends StatelessWidget {
                     Expanded(
                       child: Divider(
                         color: Colors.grey, // Color of the line
-                        thickness: 1,       // Thickness of the line
+                        thickness: 1, // Thickness of the line
                       ),
                     ),
-                    SizedBox(width: 16,)
+                    SizedBox(
+                      width: 16,
+                    )
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    ElevatedButton(onPressed: google, child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Icon(Icons.mail),
-                        Text("Google")
-                      ],
-                    )),
+                    ElevatedButton(
+                        onPressed: () {
+                          context.read<AuthBloc>().add(GoogleSignInEvent());
+                        },
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [Icon(Icons.mail), Text("Google")],
+                        )),
                   ],
                 )
               ],

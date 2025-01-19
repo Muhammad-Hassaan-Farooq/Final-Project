@@ -5,6 +5,7 @@ import 'package:final_project/data/repositories/auth/mock_auth_repository.dart';
 import 'package:final_project/data/repositories/home/activity_repository.dart';
 import 'package:final_project/data/repositories/home/mock_activity_repository.dart';
 import 'package:final_project/ui/core/theme.dart';
+import 'package:final_project/ui/home/bloc/navbar/home_page_bloc.dart';
 import 'package:final_project/ui/home/view_models/layout_view_model.dart';
 import 'package:final_project/ui/home/widgets/layout.dart';
 import 'package:flutter/material.dart';
@@ -28,8 +29,7 @@ void main() async {
                 value: MockActivityRepository()),
           ],
           child: Layout(
-              viewModel: LayoutViewModel(authRepository: MockAuthRepository()),
-              title: "Home Screen")),
+              title: "Home Screen", navBarBloc: HomePageBloc(activityRepository: MockActivityRepository()),)),
     ));
 
     await expectLater(find.byType(Layout), matchesGoldenFile('home_sc.png'));

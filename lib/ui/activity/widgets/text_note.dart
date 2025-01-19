@@ -35,7 +35,6 @@ class TextNote extends StatefulWidget {
 class TextNoteState extends State<TextNote> {
   @override
   Widget build(BuildContext context) {
-    // Format the date to a more readable format
     String formattedTime = DateFormat('hh:mm a').format(widget._time);
 
     return Card(

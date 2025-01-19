@@ -1,157 +1,94 @@
-import 'package:final_project/ui/home/view_models/upcoming_activities_view_model.dart';
-import 'package:final_project/ui/home/widgets/activity_card.dart';
+import 'package:final_project/domain/home/activity.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+
+import '../../../routing/routes.dart';
 
 class UpcomingActivities extends StatelessWidget {
-  final UpcomingActivitiesViewModel _viewModel;
+  final List<Activity> activities;
 
-  const UpcomingActivities(
-      {super.key, required UpcomingActivitiesViewModel viewModel})
-      : _viewModel = viewModel;
+  const UpcomingActivities({super.key, required this.activities});
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _viewModel.changeFilter(Filter.ALL);
-    });
-
-    return ChangeNotifierProvider.value(
-      value: _viewModel,
-      child: Consumer<UpcomingActivitiesViewModel>(
-        builder: (context, viewModel, child) {
-          return Column(
-            children: [
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
+    return Column(
+      children: activities
+          .map((activity) => Padding(
+                padding: EdgeInsets.fromLTRB(30, 16, 30, 16),
+                child: InkWell(
+                  onTap: (){
+                    context.push('${Routes.activityNotes}/${activity.id}',
+                        extra: activity);
+                  },
+                  child: Ink(
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(32),
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withOpacity(0.6)),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                            padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                            child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        _viewModel.currentFilter == Filter.ALL
-                                            ? Theme.of(context)
-                                                .colorScheme
-                                                .secondary
-                                            : Theme.of(context)
-                                                .colorScheme
-                                                .primary),
-                                onPressed: () {
-                                  _viewModel.changeFilter(Filter.ALL);
-                                },
-                                child: Text("All",
-                                    style: TextStyle(
-                                        color: _viewModel.currentFilter ==
-                                                Filter.ALL
-                                            ? Theme.of(context)
-                                                .colorScheme
-                                                .primary
-                                            : Theme.of(context)
-                                                .colorScheme
-                                                .secondary)))),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Padding(
-                            padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                            child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        _viewModel.currentFilter == Filter.SOLO
-                                            ? Theme.of(context)
-                                                .colorScheme
-                                                .secondary
-                                            : Theme.of(context)
-                                                .colorScheme
-                                                .primary),
-                                onPressed: () {
-                                  viewModel.changeFilter(Filter.SOLO);
-                                },
-                                child: Text("Solo",
-                                    style: TextStyle(
-                                        color: _viewModel.currentFilter ==
-                                                Filter.SOLO
-                                            ? Theme.of(context)
-                                                .colorScheme
-                                                .primary
-                                            : Theme.of(context)
-                                                .colorScheme
-                                                .secondary)))),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                          child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: _viewModel.currentFilter ==
-                                          Filter.COLABS
-                                      ? Theme.of(context).colorScheme.secondary
-                                      : Theme.of(context).colorScheme.primary),
-                              onPressed: () {
-                                viewModel.changeFilter(Filter.COLABS);
-                              },
-                              child: Text(
-                                "Colabs",
-                                style: TextStyle(
-                                    color: _viewModel.currentFilter ==
-                                            Filter.COLABS
-                                        ? Theme.of(context).colorScheme.primary
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .secondary),
-                              )),
-                        )
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              switch (_viewModel.currentStatus) {
-                Status.LOADING => Expanded(
-                    child: Center(
-                      child: CircularProgressIndicator(),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.3),
+                            spreadRadius: 2,
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                        color: Theme.of(context).colorScheme.secondary,
+                        borderRadius: BorderRadius.circular(16)),
+                    child: SizedBox(
+                      height: 75,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            height: 75,
+                            width: 15,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(topLeft: Radius.circular(16),bottomLeft: Radius.circular(16)),
+                                color: Colors.black
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                            child: Text(DateFormat('hh:mm a')
+                                .format(activity.startTime!),style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700
+                            ),),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 10,),
+                              Text(activity.title,style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w400
+                              ),),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: Theme.of(context).colorScheme.surface,
+                                    width: 2,
+                                  ),
+                                ),
+                                child: Text(
+                                  activity.collaborators.isEmpty?"You": "+${activity.collaborators.length.toString()}",
+                                  style: TextStyle(
+                                    color: Theme.of(context).colorScheme.onPrimary,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),)
+                            ],
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                Status.SUCCESS => Expanded(
-                    child: ListView.builder(
-                        itemCount: _viewModel.activities.length,
-                        itemBuilder: (context, index) {
-                          return ActivityCard(
-                            activity: _viewModel.activities[index],
-                            isOwn: true,
-                            isToday: false,
-                            delete: () => _viewModel
-                                .delete(_viewModel.activities[index].id),
-                            remove: () => _viewModel
-                                .remove(_viewModel.activities[index].id),
-                          );
-                        }),
-                  ),
-                Status.ERROR => Expanded(
-                    child: Center(
-                      child: Text("Error loading activities"),
-                    ),
-                  ),
-              }
-            ],
-          );
-        },
-      ),
+                ),
+              ))
+          .toList(),
     );
   }
 }
