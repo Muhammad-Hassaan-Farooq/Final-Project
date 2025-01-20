@@ -52,7 +52,6 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
           },
         );
 
-        print("$categorizedActivities   $activities");
 
         categorizedActivities['upcoming']!
             .sort((a, b) => a.startTime!.compareTo(b.startTime!));
