@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:final_project/data/repositories/activity/note_repository.dart';
 import 'package:final_project/data/repositories/auth/auth_repository.dart';
 import 'package:final_project/data/repositories/home/activity_repository.dart';
@@ -66,7 +68,7 @@ class ActivityViewModel extends ChangeNotifier {
     });
   }
 
-  Future<void> addNote(String content) async {
+  Future<void> addTextNote(String content) async {
     _noteRepository.addNote(Note(
         id: "1",
         activityId: _activityId,
@@ -74,6 +76,10 @@ class ActivityViewModel extends ChangeNotifier {
         content: content,
         timestamp: DateTime.now(),
         note_type: NOTE_TYPE.TEXT));
+  }
+
+  Future<void> addImageNote(File image) async {
+
   }
 
   Future<void> deleteNote(String noteId) async {

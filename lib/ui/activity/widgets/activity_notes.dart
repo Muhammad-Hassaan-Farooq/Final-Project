@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:final_project/domain/activity/note.dart';
 import 'package:final_project/domain/home/activity.dart';
 import 'package:final_project/routing/router.dart';
@@ -5,6 +7,7 @@ import 'package:final_project/routing/routes.dart';
 import 'package:final_project/ui/activity/widgets/text_note.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -47,8 +50,8 @@ class ActivityNotes extends StatelessWidget {
                           ),
                           const Expanded(
                             child: Divider(
-                              color: Colors.grey, // Color of the line
-                              thickness: 1, // Thickness of the line
+                              color: Colors.grey,
+                              thickness: 1,
                             ),
                           ),
                           Padding(
@@ -59,15 +62,15 @@ class ActivityNotes extends StatelessWidget {
                                   .format(_viewModel.activity.startTime!),
                               style: const TextStyle(
                                 fontSize: 16,
-                                color: Colors.grey, // Text color
+                                color: Colors.grey,
                               ),
                             ),
                           ),
                           // Right Line
                           const Expanded(
                             child: Divider(
-                              color: Colors.grey, // Color of the line
-                              thickness: 1, // Thickness of the line
+                              color: Colors.grey,
+                              thickness: 1,
                             ),
                           ),
                           const SizedBox(
@@ -187,6 +190,18 @@ class ActivityNotes extends StatelessWidget {
                                       Theme.of(context).colorScheme.surface,
                                   elevation: 20),
                             ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: IconButton(
+                              onPressed: () =>
+                                  _showAddImageModal(context, _viewModel),
+                              icon: const Icon(Icons.image),
+                              style: IconButton.styleFrom(
+                                  backgroundColor:
+                                  Theme.of(context).colorScheme.surface,
+                                  elevation: 20),
+                            ),
                           )
                         ],
                       )
@@ -244,7 +259,7 @@ void _showAddNoteModal(BuildContext context, ActivityViewModel viewModel) {
                 ElevatedButton(
                   onPressed: () {
                     if (contentController.text.isNotEmpty) {
-                      viewModel.addNote(contentController.text);
+                      viewModel.addTextNote(contentController.text);
                       Navigator.pop(context);
                     }
                   },
@@ -314,6 +329,99 @@ void _showUpdateNoteModal(BuildContext context, ActivityViewModel viewModel, Not
             const SizedBox(height: 16),
           ],
         ),
+      );
+    },
+  );
+}
+
+void _showAddImageModal(BuildContext context, ActivityViewModel viewModel) {
+  File? selectedImage;
+
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    builder: (BuildContext context) {
+      return StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+          return Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+              left: 16,
+              right: 16,
+              top: 16,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Add New Image',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  height: 200,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: selectedImage != null
+                      ? Image.file(
+                    selectedImage!,
+                    fit: BoxFit.cover,
+                  )
+                      : const Center(
+                    child: Icon(
+                      Icons.add_photo_alternate_outlined,
+                      size: 48,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton.icon(
+                  onPressed: () async {
+                    final ImagePicker picker = ImagePicker();
+                    final XFile? pickedImage = await picker.pickImage(
+                      source: ImageSource.gallery,
+                    );
+
+                    if (pickedImage != null) {
+                      setState(() {
+                        selectedImage = File(pickedImage.path);
+                      });
+                    }
+                  },
+                  icon: const Icon(Icons.photo_library),
+                  label: const Text('Choose Image'),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Cancel'),
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton(
+                      onPressed: selectedImage != null
+                          ? () {
+                        viewModel.addImageNote(selectedImage!);
+                        Navigator.pop(context);
+                      }
+                          : null,
+                      child: const Text('Add'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+              ],
+            ),
+          );
+        },
       );
     },
   );

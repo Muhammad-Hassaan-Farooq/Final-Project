@@ -1,7 +1,9 @@
+import 'package:final_project/config/dependencies.dart';
 import 'package:final_project/ui/home/bloc/navbar/home_page_bloc.dart';
 import 'package:final_project/ui/home/widgets/ongoing_activities.dart';
 import 'package:final_project/ui/home/widgets/upcoming_activities.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomePage extends StatelessWidget {
   final HomePageState state;
@@ -17,7 +19,9 @@ class HomePage extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
+              IconButton(onPressed: () {
+                context.read<HomePageBloc>().add(Logout());
+              }, icon: const Icon(Icons.logout)),
               Row(
                 children: [
                   IconButton(onPressed: () {}, icon: const Icon(Icons.search)),

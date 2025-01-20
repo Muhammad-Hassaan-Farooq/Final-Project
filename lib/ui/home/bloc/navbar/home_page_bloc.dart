@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:final_project/data/repositories/auth/auth_repository.dart';
 import 'package:final_project/data/repositories/home/activity_repository.dart';
 import 'package:final_project/domain/home/activity.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,10 +8,12 @@ part 'home_page_state.dart';
 
 class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
   final ActivityRepository activityRepository;
+  final AuthRepository authRepository;
 
-  HomePageBloc({required this.activityRepository})
+  HomePageBloc({required this.activityRepository, required this.authRepository})
       : super(const HomePageLoadingState(index: 0, previousIndex: 0)) {
     on<ChangeIndexEvent>(_onIndexChange);
+    on<Logout>(_onLogout);
     _initialize();
   }
 
@@ -49,7 +52,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
           },
         );
 
-        print(  "$categorizedActivities   $activities");
+        print("$categorizedActivities   $activities");
 
         categorizedActivities['upcoming']!
             .sort((a, b) => a.startTime!.compareTo(b.startTime!));
@@ -59,17 +62,20 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
             .sort((a, b) => b.endTime!.compareTo(a.endTime!));
 
         return HomePageSuccessState(
-          index: event.index,
-          previousIndex: state.index,
-          upcoming: categorizedActivities['upcoming']!,
-          ongoing: categorizedActivities['ongoing']!,
-          completed: categorizedActivities['completed']!,
-          activites: activities
-        );
+            index: event.index,
+            previousIndex: state.index,
+            upcoming: categorizedActivities['upcoming']!,
+            ongoing: categorizedActivities['ongoing']!,
+            completed: categorizedActivities['completed']!,
+            activites: activities);
       });
     } catch (error) {
       emit(HomePageErrorState(index: event.index, previousIndex: state.index));
     }
+  }
+
+  void _onLogout(Logout event,Emitter<HomePageState> emit) {
+    authRepository.logout();
   }
 
   Stream<List<Activity>> _getActivityStreamByIndex(int index) {

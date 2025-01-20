@@ -28,7 +28,7 @@ void main() async {
                 value: MockActivityRepository()),
           ],
           child: Layout(
-              title: "Home Screen", navBarBloc: HomePageBloc(activityRepository: MockActivityRepository()),)),
+              title: "Home Screen", navBarBloc: HomePageBloc(activityRepository: MockActivityRepository(),authRepository: MockAuthRepository()),)),
     ));
 
     await expectLater(find.byType(Layout), matchesGoldenFile('home_sc.png'));

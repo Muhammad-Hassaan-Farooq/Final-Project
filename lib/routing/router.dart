@@ -56,7 +56,9 @@ GoRouter router(
               path: Routes.home,
               builder: (context, state) {
                 return Layout(
-                  navBarBloc: HomePageBloc(activityRepository: context.read()),
+                  navBarBloc: HomePageBloc(
+                      activityRepository: context.read(),
+                      authRepository: context.read()),
                   title: "Activities",
                 );
               }),

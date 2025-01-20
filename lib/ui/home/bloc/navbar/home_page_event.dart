@@ -10,3 +10,7 @@ class ChangeIndexEvent extends HomePageEvent{
   ChangeIndexEvent({required this.index});
 }
 
+class Logout extends HomePageEvent{
+
+}
+
