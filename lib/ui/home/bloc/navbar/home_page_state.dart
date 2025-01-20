@@ -19,13 +19,15 @@ class HomePageSuccessState extends HomePageState {
   final List<Activity> ongoing;
   final List<Activity> upcoming;
   final List<Activity> completed;
+  final List<Activity> activites;
 
   const HomePageSuccessState(
       {required super.index,
       required super.previousIndex,
       required this.ongoing,
       required this.upcoming,
-      required this.completed});
+      required this.completed,
+      required this.activites});
 }
 
 class HomePageErrorState extends HomePageState {

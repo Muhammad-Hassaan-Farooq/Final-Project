@@ -1,15 +1,12 @@
+import 'package:final_project/routing/routes.dart';
 import 'package:final_project/ui/home/bloc/navbar/home_page_bloc.dart';
-import 'package:final_project/ui/home/view_models/layout_view_model.dart';
-import 'package:final_project/ui/home/view_models/old_activities_view_model.dart';
-import 'package:final_project/ui/home/view_models/today_activities_view_model.dart';
-import 'package:final_project/ui/home/view_models/upcoming_activities_view_model.dart';
 import 'package:final_project/ui/home/widgets/bottom_nav_bar.dart';
+import 'package:final_project/ui/home/widgets/history_page.dart';
 import 'package:final_project/ui/home/widgets/home_page.dart';
-import 'package:final_project/ui/home/widgets/old_activities.dart';
-import 'package:final_project/ui/home/widgets/today_activities.dart';
-import 'package:final_project/ui/home/widgets/upcoming_activities.dart';
+import 'package:final_project/ui/home/widgets/upcoming_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class Layout extends StatelessWidget {
   final HomePageBloc _navBarBloc;
@@ -27,7 +24,9 @@ class Layout extends StatelessWidget {
       child: Scaffold(
         extendBody: true,
         floatingActionButton: FloatingActionButton(
-            child: const Icon(Icons.add), onPressed: () {}),
+            child: const Icon(Icons.add), onPressed: () {
+              context.push(Routes.createActivity);
+        }),
         bottomNavigationBar: const BottomNavBar(),
         body: BlocBuilder<HomePageBloc, HomePageState>(
           builder: (context, state) {
@@ -39,15 +38,11 @@ class Layout extends StatelessWidget {
                 );
                 break;
               case 1:
-                currentPage = UpcomingActivities(
-                  activities: [],
-                );
+                currentPage =UpcomingPage(state: state);
                 break;
               case 2:
-                currentPage = OldActivities(
-                  viewModel: OldActivitiesViewModel(
-                    activityRepository: context.read(),
-                  ),
+                currentPage = HistoryPage(
+                  state:state
                 );
                 break;
               default:

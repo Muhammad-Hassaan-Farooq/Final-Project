@@ -1,7 +1,10 @@
 import 'package:final_project/domain/activity/note.dart';
 import 'package:final_project/domain/home/activity.dart';
+import 'package:final_project/routing/router.dart';
+import 'package:final_project/routing/routes.dart';
 import 'package:final_project/ui/activity/widgets/text_note.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -20,6 +23,11 @@ class ActivityNotes extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(_viewModel.activity.title),
+          actions: _viewModel.userID==_viewModel.activity.ownerId?[
+            IconButton(onPressed: (){
+              context.push("${Routes.updateActivity}/${_viewModel.activity.id}",extra: _viewModel.activity);
+            }, icon: Icon(Icons.edit))
+          ]:null,
         ),
         body: Consumer<ActivityViewModel>(
           builder: (context, viewModel, child) {

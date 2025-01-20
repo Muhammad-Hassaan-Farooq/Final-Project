@@ -24,6 +24,7 @@ class OngoingActivities extends StatelessWidget {
           return Material(
               color: Theme.of(context).colorScheme.primary,
               borderRadius: BorderRadius.circular(24),
+              elevation: 10,
               child: InkWell(
                 onTap: () {
                   context.push('${Routes.activityNotes}/${activity.id}',

@@ -60,6 +60,5 @@ class FirebaseActivityRepository extends ActivityRepository {
   }
 
   @override
-  // TODO: implement currentUser
   String get currentUser => FirebaseAuth.instance.currentUser!.uid;
 }

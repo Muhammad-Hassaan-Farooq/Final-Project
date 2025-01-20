@@ -6,7 +6,6 @@ import 'package:final_project/data/repositories/home/activity_repository.dart';
 import 'package:final_project/data/repositories/home/mock_activity_repository.dart';
 import 'package:final_project/ui/core/theme.dart';
 import 'package:final_project/ui/home/bloc/navbar/home_page_bloc.dart';
-import 'package:final_project/ui/home/view_models/layout_view_model.dart';
 import 'package:final_project/ui/home/widgets/layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';

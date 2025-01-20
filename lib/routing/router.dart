@@ -7,12 +7,15 @@ import 'package:final_project/ui/auth/bloc/auth_bloc.dart';
 import 'package:final_project/ui/auth/widgets/login_screen.dart';
 import 'package:final_project/ui/core/widgets/splash_screen.dart';
 import 'package:final_project/ui/home/bloc/navbar/home_page_bloc.dart';
-import 'package:final_project/ui/home/view_models/layout_view_model.dart';
+import 'package:final_project/ui/home/bloc/update_activity/update_activity_bloc.dart';
+import 'package:final_project/ui/home/widgets/create_activity_page.dart';
 import 'package:final_project/ui/home/widgets/layout.dart';
+import 'package:final_project/ui/home/widgets/update_activity_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../ui/core/view_models/splash_screen_view_model.dart';
+import '../ui/home/bloc/create_activity/create_activity_bloc.dart';
 
 GoRouter router(
   AuthRepository authRepository,
@@ -75,6 +78,27 @@ GoRouter router(
                         activityRepository: context.read(),
                         noteRepository: context.read(),
                         activityId: activityId,
-                        activity:activity ));
+                        activity: activity));
               }),
+          GoRoute(
+              path: Routes.createActivity,
+              builder: (context, state) {
+                return CreateActivityPage(
+                  createActivityBloc:
+                      CreateActivityBloc(activityRepository: context.read()),
+                );
+              }),
+          GoRoute(
+              path: '${Routes.updateActivity}/:id',
+              builder: (context, state) {
+                final activityId = state.pathParameters['id']!;
+                final activity = state.extra as Activity;
+
+                return UpdateActivityPage(
+                  updateActivityBloc: UpdateActivityBloc(
+                      activity: activity,
+                      activityId: activityId,
+                      activityRepository: context.read()),
+                );
+              })
         ]);

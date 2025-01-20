@@ -32,69 +32,69 @@ class HomePage extends StatelessWidget {
             ],
           ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            GestureDetector(
-              onTap: () {},
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.easeInOut,
-                margin: const EdgeInsets.all(8.0),
-                child: Material(
-                  elevation: true ? 8.0 : 0.0,
-                  borderRadius: BorderRadius.circular(16),
-                  color: true
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.surface,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0, vertical: 12.0),
-                    child: Text(
-                      "Solo",
-                      style: TextStyle(
-                        color: true
-                            ? Theme.of(context).colorScheme.onPrimary
-                            : Theme.of(context).colorScheme.onSurface,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              width: 20,
-            ),
-            GestureDetector(
-              onTap: () {},
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.easeInOut,
-                margin: const EdgeInsets.all(8.0),
-                child: Material(
-                  elevation:
-                      true ? 8.0 : 0.0, // Change elevation based on state
-                  borderRadius: BorderRadius.circular(16),
-                  color: true
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.surface,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0, vertical: 12.0),
-                    child: Text(
-                      "Colab",
-                      style: TextStyle(
-                        color: true
-                            ? Theme.of(context).colorScheme.onPrimary
-                            : Theme.of(context).colorScheme.onSurface,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.center,
+        //   children: [
+        //     GestureDetector(
+        //       onTap: () {},
+        //       child: AnimatedContainer(
+        //         duration: const Duration(milliseconds: 200),
+        //         curve: Curves.easeInOut,
+        //         margin: const EdgeInsets.all(8.0),
+        //         child: Material(
+        //           elevation: true ? 8.0 : 0.0,
+        //           borderRadius: BorderRadius.circular(16),
+        //           color: true
+        //               ? Theme.of(context).colorScheme.primary
+        //               : Theme.of(context).colorScheme.surface,
+        //           child: Padding(
+        //             padding: const EdgeInsets.symmetric(
+        //                 horizontal: 16.0, vertical: 12.0),
+        //             child: Text(
+        //               "Solo",
+        //               style: TextStyle(
+        //                 color: true
+        //                     ? Theme.of(context).colorScheme.onPrimary
+        //                     : Theme.of(context).colorScheme.onSurface,
+        //               ),
+        //             ),
+        //           ),
+        //         ),
+        //       ),
+        //     ),
+        //     const SizedBox(
+        //       width: 20,
+        //     ),
+        //     GestureDetector(
+        //       onTap: () {},
+        //       child: AnimatedContainer(
+        //         duration: const Duration(milliseconds: 200),
+        //         curve: Curves.easeInOut,
+        //         margin: const EdgeInsets.all(8.0),
+        //         child: Material(
+        //           elevation:
+        //               true ? 8.0 : 0.0, // Change elevation based on state
+        //           borderRadius: BorderRadius.circular(16),
+        //           color: true
+        //               ? Theme.of(context).colorScheme.primary
+        //               : Theme.of(context).colorScheme.surface,
+        //           child: Padding(
+        //             padding: const EdgeInsets.symmetric(
+        //                 horizontal: 16.0, vertical: 12.0),
+        //             child: Text(
+        //               "Colab",
+        //               style: TextStyle(
+        //                 color: true
+        //                     ? Theme.of(context).colorScheme.onPrimary
+        //                     : Theme.of(context).colorScheme.onSurface,
+        //               ),
+        //             ),
+        //           ),
+        //         ),
+        //       ),
+        //     ),
+        //   ],
+        // ),
         if (state is HomePageLoadingState)
           SizedBox(
               height: 500,

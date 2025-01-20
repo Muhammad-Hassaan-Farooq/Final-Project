@@ -49,7 +49,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
           },
         );
 
-        print(categorizedActivities);
+        print(  "$categorizedActivities   $activities");
 
         categorizedActivities['upcoming']!
             .sort((a, b) => a.startTime!.compareTo(b.startTime!));
@@ -64,6 +64,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
           upcoming: categorizedActivities['upcoming']!,
           ongoing: categorizedActivities['ongoing']!,
           completed: categorizedActivities['completed']!,
+          activites: activities
         );
       });
     } catch (error) {
