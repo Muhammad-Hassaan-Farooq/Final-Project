@@ -25,8 +25,8 @@ void main() {
 
   group('HomePageBloc', ()
   {
-    test('initial state should be HomePageLoadingState with index 0', () {
-      expect(homePageBloc.state, isA<HomePageLoadingState>());
+    test('initial state should be HomePageSuccessState', () {
+      expect(homePageBloc.state, isA<HomePageSuccessState>());
       expect(homePageBloc.state.index, equals(0));
       expect(homePageBloc.state.previousIndex, equals(0));
     });

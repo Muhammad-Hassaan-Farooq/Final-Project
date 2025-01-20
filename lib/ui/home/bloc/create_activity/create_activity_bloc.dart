@@ -15,7 +15,7 @@ class CreateActivityBloc
       : super(CreateActivityState()) {
     on<ChangeFormInputEvent>(_onInputChange);
     on<SubmitEvent>(_onSubmit);
-    _init();
+    //_init();
 
   }
 
@@ -25,6 +25,7 @@ class CreateActivityBloc
 
   void _onInputChange(
       ChangeFormInputEvent event, Emitter<CreateActivityState> emit) {
+
     emit(CreateActivityState(
       title: event.title ?? state.title,
       category: event.category ?? state.category,
